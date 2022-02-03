@@ -75,19 +75,19 @@
               img(src='../../assets/icons/visa.svg')
             a.option-img
               img(src='../../assets/icons/mastercard.svg')
-    nav.pagination 
-      a.nav-prev(:class='{ "nav-disable" : activePage == 1}'
-      @click='alterarPagina(activePage - 1)') Página anterior
-      .nav-pages 
-        a.page-num(@click='alterarPaginaDaGaleria(n)'
-        v-for='n in Math.ceil(produtosFiltrados.length / produtosEmPagina)'
-        v-bind:class='{ "page-active": n == activePage }') {{ n }}
-      a.nav-next(@click='alterarPaginaDaGaleria(activePage + 1)'
-      v-bind:class='{ "nav-disable": activePage ==\
-      Math.ceil(produtosFiltrados.length / produtosEmPagina) }') Proxima Página
+    //-nav.pagination 
+    //-  a.nav-prev(:class='{ "nav-disable" : activePage == 1}'
+    //-  @click='alterarPagina(activePage - 1)') Página anterior
+    //-  .nav-pages 
+    //-    a.page-num(@click='alterarPaginaDaGaleria(n)'
+    //-    v-for='n in Math.ceil(produtosFiltrados.length / produtosEmPagina)'
+    //-    v-bind:class='{ "page-active": n == activePage }') {{ n }}
+    //-  a.nav-next(@click='alterarPaginaDaGaleria(activePage + 1)'
+    //-  v-bind:class='{ "nav-disable": activePage ==\
+    //-  Math.ceil(produtosFiltrados.length / produtosEmPagina) }') Proxima Página
 
-    product(v-on:close='closeProductModal' v-bind='{productModal, topProducts}'
-    v-if='productModal')
+    product(v-on:close='closeProductModal' v-bind='{produtoModal, topProducts}'
+    v-if='produtoModal')
         
       
    
@@ -111,6 +111,7 @@ export default {
 			ordenacaoSelecionada: 'none',
 			categorias: [],
 			tipos: [],
+			produtoModal: null,
 			produtosFiltrados: {},
 			produtosEmPagina: 0,
 			activePage: 1
