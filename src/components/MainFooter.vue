@@ -23,10 +23,10 @@
           ul.list.social-list 
             ul.list.social-list
               li.social-item(v-for='social in socials')
-              a.social-link
-              img(:src='"../assets/icons/" + social + ".svg"')
+               a.social-link
+                img(:src='"../assets/icons/" + social + ".svg"')
     .copyright
-      p Developed by pxlhead. All rights reserved. &reg;
+      p Desenvovido por Diego Pereira. Todos os direitos reservados. &reg;
     
 </template>
 <script>
