@@ -34,6 +34,7 @@
 </template>
 
 <script>
+import router from '@/router';
 export default {
 	name: 'main-header',
 	data() {
@@ -45,6 +46,16 @@ export default {
 			showMenu: false,
 		}
 	},
+	methods: {
+		alterarPagina(pagina) {
+			router.push({
+				name: pagina,
+				params: {
+
+				}
+			})
+		}
+	}
 }
 </script>
 
