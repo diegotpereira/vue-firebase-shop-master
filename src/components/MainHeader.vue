@@ -5,11 +5,30 @@
        img(src='../assets/logo.svg' alt='Logo')
     .cart
      .a.cart-link
-	
-
-    
-			
-
+        img(src='../assets/icons/cart.svg' alt='Cart')
+        span.cart-count
+     .cart-submenu
+        ul.cart-list
+         li.cart-product 
+          a.product-thumbnail
+           img(src='' alt='')
+           .produtct.descrption
+            a.product-title
+            span.product.price
+        .cart-subtotal
+          span 
+          span
+        .cart-links
+          a.cart-view 
+          a.cart-checkout
+    a.nav.toggle
+      .toggle-icon
+        span
+        span
+        span 
+      transition
+        nav 
+         a.nav-link       
 </template>
 
 <script>
