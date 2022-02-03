@@ -34,7 +34,7 @@
     section.info
       h2.aside-title INFORMAÇÕES
       .info-item
-        h4.info-title Somos gratos com nossos autores
+        h4.info-title Somos gratos ao nossos autores
         p.
                       Os artistas estão no centro de tudo o que fazemos e a razão pela qual
                       O dtpshop continua sendo um destino importante para conteúdo de estoque.
@@ -49,12 +49,12 @@
                       arte é para todos, e estamos criando o contexto cultural de como
                       ele é criado, descoberto e compartilhado.
       .info-item
-        h4.info-title Somos gentis com nossos clientes
+        h4.info-title Somos gratos aos nossos clientes
         p.
                       O registo é gratuito e dá-lhe acesso a milhares de
                       fotos, ilustrações e padrões profissionais isentos de royalties.
-                      Encontre ótimos arquivos dos maiores contribuidores do mundo pelo menor preço
-                      preços. Sempre damos boas-vindas para personalizar todos os nossos planos para atender às suas necessidades.
+                      Encontre ótimos arquivos dos maiores contribuidores do mundo pelo menor preço. 
+          Sempre damos boas-vindas para personalizar todos os nossos planos para atender às suas necessidades.
     section.awards
       h2.aside-title PRÊMIOS
       .awards-item(v-for='n in 4')
