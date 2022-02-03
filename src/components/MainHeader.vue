@@ -1,7 +1,7 @@
 <template lang="pug">
   header.header
     .logo
-      a.logo-link
+      a.logo-link(@click='alterarPagina("Home")')
         img(src='../assets/logo.svg' alt='Logo')
     .cart
       .a.cart-link
@@ -12,7 +12,7 @@
           li.cart-product 
             a.product-thumbnail
              img(src='' alt='')
-            .produtct.description
+            .product.description
              a.product-title
              span.product.price
             a.product-remove
@@ -22,8 +22,8 @@
         .cart-links
           a.cart-view 
           a.cart-checkout
-    a.nav.toggle
-      .toggle-icon
+    a.nav-toggle(@click='showMenu = !showMenu')
+      .toggle-icon(:class='{open: showMenu}')
         span
         span
         span 
@@ -41,7 +41,8 @@ export default {
 			paginas: [
 				'Home',
 				'Loja'
-			]
+			],
+			showMenu: false,
 		}
 	},
 }
