@@ -34,7 +34,10 @@ export default {
     name: 'main-footer',
     data() {
         return {
-
+			paginas: [
+				'Home',
+				'Loja'
+			],
             socials: ['twitter', 'facebook', 'youtube', 'instagram']
 
         }

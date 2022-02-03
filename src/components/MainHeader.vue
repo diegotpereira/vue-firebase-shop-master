@@ -33,7 +33,15 @@
 
 <script>
 export default {
-	name: 'main-header'
+	name: 'main-header',
+	data() {
+		return {
+			paginas: [
+				'Home',
+				'Loja'
+			]
+		}
+	},
 }
 </script>
 
