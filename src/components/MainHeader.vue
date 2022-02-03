@@ -1,20 +1,21 @@
 <template lang="pug">
   header.header
     .logo
-    a.logo-link
-       img(src='../assets/logo.svg' alt='Logo')
+      a.logo-link
+        img(src='../assets/logo.svg' alt='Logo')
     .cart
-     .a.cart-link
+      .a.cart-link
         img(src='../assets/icons/cart.svg' alt='Cart')
         span.cart-count
-     .cart-submenu
+      .cart-submenu
         ul.cart-list
-         li.cart-product 
-          a.product-thumbnail
-           img(src='' alt='')
-           .produtct.descrption
-            a.product-title
-            span.product.price
+          li.cart-product 
+            a.product-thumbnail
+             img(src='' alt='')
+            .produtct.description
+             a.product-title
+             span.product.price
+            a.product-remove
         .cart-subtotal
           span 
           span
@@ -26,9 +27,10 @@
         span
         span
         span 
-      transition
-        nav 
-         a.nav-link       
+      transition(name='toggle-menu')
+        nav.nav(v-if='showMenu')
+          a.nav-link(v-for='pagina in paginas'
+          @click='alterarPagina(pagina)') {{ pagina }}
 </template>
 
 <script>
