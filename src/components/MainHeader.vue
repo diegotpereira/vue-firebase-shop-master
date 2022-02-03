@@ -4,15 +4,15 @@
       a.logo-link(@click='alterarPagina("Home")')
         img(src='../assets/logo.svg' alt='Logo')
     .cart
-      .a.cart-link
+      a.cart-link
         img(src='../assets/icons/cart.svg' alt='Cart')
-        span.cart-count
+        span.cart-count(v-if='exibirCarrinho')
       .cart-submenu
         ul.cart-list
           li.cart-product 
             a.product-thumbnail
-             img(src='' alt='')
-            .product.description
+             img()
+            .product-description
              a.product-title
              span.product.price
             a.product-remove
@@ -20,8 +20,8 @@
           span 
           span
         .cart-links
-          a.cart-view 
-          a.cart-checkout
+          a.cart-view(@click='alterarPagina("Carrinho")') Exibir Carrinho
+          a.cart-checkout(@click='alterarPagina("Finalizar")') Finalizar
     a.nav-toggle(@click='showMenu = !showMenu')
       .toggle-icon(:class='{open: showMenu}')
         span
@@ -37,6 +37,7 @@
 import router from '@/router';
 export default {
 	name: 'main-header',
+	props: ['produtosNoCarrinho'],
 	data() {
 		return {
 			paginas: [
@@ -44,6 +45,11 @@ export default {
 				'Loja'
 			],
 			showMenu: false,
+		}
+	},
+	computed: {
+		exibirCarrinho() {
+			return Object.keys(this.produtosNoCarrinho).length > 0
 		}
 	},
 	methods: {

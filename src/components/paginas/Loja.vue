@@ -9,22 +9,22 @@
           .select-wrap
             select(v-model='categoriaSelecionada')
               option(v-for='categoria in categorias'
-              v-bind:value='categoria') Categoria: {{ }}
+              v-bind:value='categoria') Categoria: {{ categoria }}
             span.select-arrow
           .select-wrap
             select(v-model='ordenacaoSelecionada')
-              option(v-for='sort in tipos'
-              v-bind:value='sort') Classificar por: {{ sort }}
+              option(v-for='classificar in tipos'
+              v-bind:value='classificar') Classificar por: {{ classificar }}
             span.select-arrow
         transition-group.gallery-row(name='gallery-anim' tag='div'
         mode='out-in')
-            .gallery-produto(v-for='(produto, index) in produtosFiltrados'
+            .galeria-produto(v-for='(produto, index) in produtosFiltrados'
             v-bind:key='index' v-if='index >= produtoEmPagina * (activePage -1)\
             && index < produtoEmPagina * activePage')
               .produto-img 
                 img(:src='produto.url' alt='produto.nome'
                 @click='')
-                .produto-actions(:class='{"produto-actions--active" : startBoxHover}')
+                .produto-acoes(:class='{"produto-actions--active" : startBoxHover}')
                   a.cart-link(:class='{"cart-link--active": verificarNoCarrinho(produto)}'
                     @click='')
                   .star-box(@mouseenter='startBoxHover = true'
@@ -86,7 +86,7 @@
     //-  v-bind:class='{ "nav-disable": activePage ==\
     //-  Math.ceil(produtosFiltrados.length / produtosEmPagina) }') Proxima Página
 
-    product(v-on:close='closeProductModal' v-bind='{produtoModal, topProducts}'
+    product(v-on:close='fecharProdutoModal' v-bind='{produtoModal, principaisProdutos}'
     v-if='produtoModal')
         
       
@@ -109,8 +109,8 @@ export default {
 		return {
 			categoriaSelecionada: 'all',
 			ordenacaoSelecionada: 'none',
-			categorias: [],
-			tipos: [],
+			categorias: ['todas', 'ilustrações', 'padrões', 'fotos'],
+			tipos: ['nenhum', 'recente', 'populares'],
 			produtoModal: null,
 			produtosFiltrados: {},
 			produtosEmPagina: 0,
@@ -135,6 +135,10 @@ export default {
 		},
 		carrinhoValor() {
 
+		},
+
+		fecharProdutoModal() {
+			this.produtoModal = null
 		}
 	},
 	watch: {
@@ -215,14 +219,14 @@ select {
   flex-wrap: wrap;
   justify-content: space-between;
 }
-.gallery-product {
+.galeria-produto {
   flex-direction: column;
   margin-bottom: 1rem;
   flex-basis: 30%;
   display: flex;
 }
 .product-img {
-  &:hover .product-actions {
+  &:hover .produto-acoes {
     transform: translateX(0);
   }
   img {
@@ -232,7 +236,7 @@ select {
     }
   }
 }
-.product-actions {
+.produto-acoes {
   position: absolute;
   overflow: visible;
   top: calc(50% - 2rem);
@@ -415,7 +419,7 @@ select {
 }
 
 @media screen and (max-width: 991px) {
-  .gallery-product {
+  .galeria-produto {
     flex-basis: calc(90% / 2);
   }
   .product-price, .product-author {
@@ -442,7 +446,7 @@ select {
   .sidebar {
     display: none;
   }
-  .gallery-product {
+  .galeria-produto {
     flex-basis: 100%;
   }
   .product-title {
