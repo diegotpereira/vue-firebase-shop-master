@@ -6,16 +6,16 @@
     .cart
       a.cart-link
         img(src='../assets/icons/cart.svg' alt='Cart')
-        span.cart-count(v-if='exibirCarrinho')
+        span.cart-count(v-if='')
       .cart-submenu
         ul.cart-list
-          li.cart-product 
-            a.product-thumbnail
+          li.cart-produto(v-for='(produto, key) in produtosNoCarrinho')
+            a.produto-thumbnail
              img()
-            .product-description
-             a.product-title
-             span.product.price
-            a.product-remove
+            .produto-description
+             a.produto-title
+             span.produto.price
+            a.produto-remove
         .cart-subtotal
           span 
           span
@@ -57,7 +57,7 @@ export default {
 			router.push({
 				name: pagina,
 				params: {
-
+          produtosNoCarrinho: this.produtosNoCarrinho,
 				}
 			})
 		}
@@ -140,7 +140,7 @@ a {
     color: $color-light;
   }
 }
-.cart-product {
+.cart-produto {
   border-color: $color-grey;
 }
 .cart:hover .cart-submenu {
