@@ -59,7 +59,7 @@ export default {
 				name: pagina,
 				params: {
 					produtosNoCarrinho: this.produtosNoCarrinho
-				},
+				}
 			});
 		}
 	}

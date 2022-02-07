@@ -1,7 +1,7 @@
 <template lang="pug">
   .content 
     h1
-      | Bem-vindo à nossa loja criativa - vendemos design incomum
+      | Bem-vindo à nossa loja online - vendemos design incomum
       | ilustrações que batem no seu coração.
     section.produtos
       .gallery
@@ -13,8 +13,8 @@
             span.select-arrow
           .select-wrap
             select(v-model='ordenacaoSelecionada')
-              option(v-for='classificar in tipos'
-              v-bind:value='classificar') Classificar por: {{ classificar }}
+              option(v-for='tipo in tipos'
+              v-bind:value='tipo') Classificar por: {{ tipo }}
             span.select-arrow
         transition-group.gallery-row(name='gallery-anim' tag='div'
         mode='out-in')
@@ -105,32 +105,33 @@ export default {
 	components: {
 		Produto,
 	},
-	data() {
-		return {
-			categoriaSelecionada: 'all',
-			ordenacaoSelecionada: 'none',
-			categorias: ['todas', 'ilustrações', 'padrões', 'fotos'],
-			tipos: ['nenhum', 'recente', 'populares'],
-			produtoModal: null,
-			produtosFiltrados: {},
-			produtosEmPagina: 0,
-			activePage: 1
-		}
-	},
+    data() {
+        return {
+          categoriaSelecionada: 'todas',
+          ordenacaoSelecionada: 'none',
+          categorias: ['todas', 'ilustrações', 'padrões', 'fotos'],
+          tipos: ['nenhum', 'recente', 'populares'],
+          produtoModal: null,
+          produtosFiltrados: {},
+          produtosEmPagina: 0,
+          activePage: 1,
+        };
+    },
+    created() {
+      this.produtosFiltrados - this.produtos
+
+    },
 	computed: {
 		carrinhoExibir() {
 			return Object.keys(this.produtosNoCarrinho).length > 0
 		},
 		principaisProdutos() {
-			return this.classificarPorAvaliacao(this.produtos)
+			return this.classificarPorAvaliacao(this.produtos).slice(0, 3)
 		}
 	},
 	methods: {
 
 		alterarPaginaDaGaleria(){
-
-		},
-		classificarPorAvaliacao() {
 
 		},
 		carrinhoValor() {
@@ -139,14 +140,67 @@ export default {
 
 		fecharProdutoModal() {
 			this.produtoModal = null
-		}
+		},
+    classificarPorAvaliacao(produtos) {
+      return this.deepClone(produtos).sort((prodA, prodB) => {
+        if (prodA.rating && prodB.rating) {
+          const ratingA = Object.values(prodA.rating).reduce(
+            (sum, val) => sum + val, 0);
+          const ratingB = Object.values(prodB.rating).reduce(
+            (sum, val) => sum + val, 0);
+          return ratingA <= ratingB ? 1 : -1;
+        }
+        return prodB.rating ? 1 : -1;
+      });
+    },
+    deepClone(obj) {
+      return JSON.parse(JSON.stringify(obj));
+    },
+  //   deepClone(obj) {
+  //   let objClone = {};
+  //   let _obj = JSON.stringify(obj);
+  //   objClone = JSON.parse(_obj);
+  //   return objClone;
+  // },
+    // deepClone(obj) {
+
+    //   var stringified = JSON.stringify(obj);
+    //   var parsedObj = JSON.parse(stringified);
+    //   return parsedObj
+    // },
+    // sort: function(s){
+    //             if(s === this.sortBy) {
+    //                 this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
+    //             }
+    //             this.sortBy = s;
+    //         }
 	},
 	watch: {
-		categoriaSelecionada() {
-
+		categoriaSelecionada(novaCategoria) {
+      if (novaCategoria === 'todas') {
+        this.produtosFiltrados = this.produtos;
+        return;
+      }
+      this.produtosFiltrados = this.deepClone(this.produtos)
+        .filter(prod => prod.type === novaCategoria);
+      this.activePage = 1;
 		},
-		ordenacaoSelecionada() {
+		ordenacaoSelecionada(novoTipo) {
+      switch(novoTipo) {
+        case 'popular':
+          this.produtosFiltrados = this.classificarPorAvaliacao(this.produto)
+          break
+        case 'recente': 
+          this.produtosFiltrados = this.deepClone(this.produtos)
+          this.deepClone = this.sort((prodA, prodB) => (
+            Date.parse(prodA.date) < Date.parse(prodB.date) ? 1 : -1
+          ))
+          break 
 
+        default: 
+          this.produtosFiltrados = this.produtos   
+      }
+      this.activePage = 1
 		}
 	}
 }
