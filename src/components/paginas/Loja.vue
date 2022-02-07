@@ -23,15 +23,15 @@
             && index < produtoEmPagina * activePage')
               .produto-img 
                 img(:src='produto.url' alt='produto.nome'
-                @click='')
+                @click='exibirProdutoModal(produto)')
                 .produto-acoes(:class='{"produto-actions--active" : startBoxHover}')
                   a.cart-link(:class='{"cart-link--active": verificarNoCarrinho(produto)}'
                     @click='')
                   .star-box(@mouseenter='startBoxHover = true'
                   @mouseleave='startBoxHover = false')
                     span.star.star-link(v-for='star in 5'
-                  @click='rateProduto(produto, (6 - start))')
-              h2.produto-title(@click='exibirProdutoModal(produto)')
+                  @click='taxaProduto(produto, (6 - star))')
+              h2.produto-titulo(@click='exibirProdutoModal(produto)') {{ produto.nome }}
               span.produto-autor {{ produto.autor }}
               span.produto-preco ${{ produto.preco }}.00
       aside.sidebar
@@ -40,21 +40,21 @@
           ul.top-list 
             li.top-produto(v-for='produto in principaisProdutos')
               .top-produto-info
-                a.produto-title {{ produto.nome }}
+                a.produto-titulo {{ produto.nome }}
                 .produto-stars 
                   span.star(v-for='n in 5'
                   v-bind:class='{ "star-full": n <= getStars(produto) }')
                 span.produto-preco ${{ produto.preco }}.00
               .top-produto-img 
                 img.produto-img(:src='produto.url' alt='produto.nome')
-        .widget-cart(v-if='')
+        .widget-cart(v-if='exibirCarrinho')
           h3.widget-title Revisão do carrinho
           ul.cart-list 
             li.cart-produto(v-for='(produto, key) in produtosNoCarrinho')
               a.produto-thumbnail 
                 img(:src='produto.url' alt='produto.nome')
               .produto-descricao 
-                a.produto-title {{ produto.nome }}
+                a.produto-titulo {{ produto.nome }}
                 span.produto-preco ${{ produto.preco }}
               a.produto-remove(@click='removerDoCarrinho(key)')
           .cart-subtotal 
@@ -75,22 +75,20 @@
               img(src='../../assets/icons/visa.svg')
             a.option-img
               img(src='../../assets/icons/mastercard.svg')
-    //-nav.pagination 
-    //-  a.nav-prev(:class='{ "nav-disable" : activePage == 1}'
-    //-  @click='alterarPagina(activePage - 1)') Página anterior
-    //-  .nav-pages 
-    //-    a.page-num(@click='alterarPaginaDaGaleria(n)'
-    //-    v-for='n in Math.ceil(produtosFiltrados.length / produtosEmPagina)'
-    //-    v-bind:class='{ "page-active": n == activePage }') {{ n }}
-    //-  a.nav-next(@click='alterarPaginaDaGaleria(activePage + 1)'
-    //-  v-bind:class='{ "nav-disable": activePage ==\
-    //-  Math.ceil(produtosFiltrados.length / produtosEmPagina) }') Proxima Página
+    nav.pagination 
+      a.nav-prev(:class='{ "nav-disable" : activePage == 1}'
+      @click='alterarPagina(activePage - 1)') Página anterior
+      .nav-pages 
+        a.page-num(@click='alterarPaginaDaGaleria(n)'
+        v-for='n in Math.ceil(produtosFiltrados.length / produtosEmPagina)'
+        v-bind:class='{ "page-active": n == activePage }') {{ n }}
+      a.nav-next(@click='alterarPaginaDaGaleria(activePage + 1)'
+      v-bind:class='{ "nav-disable": activePage ==\
+      Math.ceil(produtosFiltrados.length / produtosEmPagina) }') Proxima Página
 
-    product(v-on:close='fecharProdutoModal' v-bind='{produtoModal, principaisProdutos}'
+    produto(v-on:close='fecharProdutoModal' v-bind='{produtoModal, principaisProdutos}'
     v-if='produtoModal')
         
-      
-   
 </template>
 
 <script>
@@ -98,6 +96,7 @@
 /* eslint-disable global-require */
 /* eslint-disable no-unused-expressions */
 import Produto from './Produto.vue'
+import router from '@/router'
 export default {
 	name: 'loja',
 	props: ['produtosNoCarrinho'],
@@ -115,11 +114,12 @@ export default {
           produtosFiltrados: {},
           produtosEmPagina: 0,
           activePage: 1,
+      produtosEstrelas: {},
+      starBoxHover: false,
         };
     },
     created() {
       this.produtosFiltrados - this.produtos
-
     },
 	computed: {
 		carrinhoExibir() {
@@ -131,13 +131,22 @@ export default {
 	},
 	methods: {
 
-		alterarPaginaDaGaleria(){
-
+		alterarPaginaDaGaleria(pagina){
+			router.push({
+				name: pagina,
+				params: {
+					produtosNoCarrinho: this.produtosNoCarrinho
+				}
+			})
 		},
-		carrinhoValor() {
-
+		carrinhoValor(galleryPage) {
+			this.activePage = galleryPage
+			window.scrollTo(0, 0)
 		},
 
+		exibirProdutoModal(produto) {
+			this.produtoModal = produto
+		},
 		fecharProdutoModal() {
 			this.produtoModal = null
 		},
@@ -153,54 +162,68 @@ export default {
         return prodB.rating ? 1 : -1;
       });
     },
-    deepClone(obj) {
+	taxaProduto(produto, estrelas) {
+		const atualizacoes = {}
+		console.log(atualizacoes);
+		console.log(produto);
+		console.log(estrelas);
+	},
+	addNoCarrinho() {
+
+	},
+	verificarNoCarrinho(produto) {
+		if(produto) {
+
+			return this.produtosNoCarrinho[produto['.key']] !== undefined
+		}
+
+		return false
+	},
+
+	valorCarrinho() {
+
+		return Object.values(this.produtosNoCarrinho)
+		.reduce((sum, produto) => sum + Number(produto.preco), 0)
+	},
+
+	removerDoCarrinho(key) {
+		this.$delete(this.produtosNoCarrinho, key)
+	},
+	buscaEstrelas(produto) {
+
+		return this.produtosNoCarrinho[produto['.key']]
+	},
+	deepClone(obj) {
+		console.log(obj);
       return JSON.parse(JSON.stringify(obj));
     },
-  //   deepClone(obj) {
-  //   let objClone = {};
-  //   let _obj = JSON.stringify(obj);
-  //   objClone = JSON.parse(_obj);
-  //   return objClone;
-  // },
-    // deepClone(obj) {
-
-    //   var stringified = JSON.stringify(obj);
-    //   var parsedObj = JSON.parse(stringified);
-    //   return parsedObj
-    // },
-    // sort: function(s){
-    //             if(s === this.sortBy) {
-    //                 this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
-    //             }
-    //             this.sortBy = s;
-    //         }
 	},
 	watch: {
 		categoriaSelecionada(novaCategoria) {
-      if (novaCategoria === 'todas') {
-        this.produtosFiltrados = this.produtos;
-        return;
-      }
+			if (novaCategoria === 'todas') {
+				this.produtosFiltrados = this.produtos;
+				return;
+			}
       this.produtosFiltrados = this.deepClone(this.produtos)
         .filter(prod => prod.type === novaCategoria);
       this.activePage = 1;
 		},
 		ordenacaoSelecionada(novoTipo) {
-      switch(novoTipo) {
-        case 'popular':
-          this.produtosFiltrados = this.classificarPorAvaliacao(this.produto)
-          break
-        case 'recente': 
-          this.produtosFiltrados = this.deepClone(this.produtos)
-          this.deepClone = this.sort((prodA, prodB) => (
-            Date.parse(prodA.date) < Date.parse(prodB.date) ? 1 : -1
-          ))
-          break 
+			switch(novoTipo) {
+				case 'popular':
+				this.produtosFiltrados = this.classificarPorAvaliacao(this.produto)
+				break
+				case 'recente': 
+				this.produtosFiltrados = this.deepClone(this.produtos)
+				this.deepClone = this.sort((prodA, prodB) => (
+					Date.parse(prodA.date) < Date.parse(prodB.date) ? 1 : -1
+				))
+				break 
 
-        default: 
-          this.produtosFiltrados = this.produtos   
-      }
-      this.activePage = 1
+				default: 
+				this.produtosFiltrados = this.produtos   
+			}
+			this.activePage = 1
 		}
 	}
 }
@@ -217,7 +240,7 @@ $border: 1px solid rgba(0, 0, 0, 0.2);
 .content {
   padding: 12vh 10vw 0 10vw;
 }
-.products {
+.produtos {
   display: flex;
   padding-bottom: 3rem;
   border-top: 2px solid rgba(0, 0, 0, 0.2);
@@ -279,7 +302,7 @@ select {
   flex-basis: 30%;
   display: flex;
 }
-.product-img {
+.produto-img {
   &:hover .produto-acoes {
     transform: translateX(0);
   }
@@ -355,14 +378,14 @@ select {
     }
   }
 }
-.product-title {
+.produto-titulo {
   margin-bottom: 0.3rem;
   cursor: pointer;
 }
-.product-price, .product-author {
+.produto-preco, .produto-autor {
   font-size: 1vw;
 }
-.product-author {
+.produto-autor {
   padding-bottom: 0.5rem;
 }
 
@@ -378,16 +401,16 @@ select {
   display: flex;
   flex-direction: column;
 }
-.top-product {
+.top-produto {
   display: flex;
   border-bottom: $border;
   padding: 2rem 0;
 }
-.top-product-info {
+.top-produto-info {
   flex: 3;
   display: flex;
   flex-direction: column;
-  .product-stars, .product-price {
+  .produto-stars, .produto-preco {
     flex: 1;
     padding-top: 1rem;
   }
@@ -404,7 +427,7 @@ select {
     color: $color-green;
   }
 }
-.top-product-img {
+.top-produto-img {
   flex-basis: 10rem;
 }
 .widget-cart {
@@ -476,7 +499,7 @@ select {
   .galeria-produto {
     flex-basis: calc(90% / 2);
   }
-  .product-price, .product-author {
+  .produto-preco, .produto-autor {
     font-size: 1.5vw;
   }
   .select-wrap {
@@ -491,7 +514,7 @@ select {
   .content {
     padding: 12vh 15vw 0 15vw;
   }
-  .products {
+  .produtos {
     flex-direction: column;
   }
   .gallery {
@@ -503,10 +526,10 @@ select {
   .galeria-produto {
     flex-basis: 100%;
   }
-  .product-title {
+  .produto-titulo {
     font-size: 3vw;
   }
-  .product-price, .product-author {
+  .produto-price, .produto-autor {
     font-size: 3vw;
   }
   .cart-link {

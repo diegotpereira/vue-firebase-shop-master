@@ -111,9 +111,9 @@ export default {
 	},
 	computed: {
 		classificarPrincipaisProdutos() {
-			//this.principaisProdutos = this.produtos.sort((prodA, prodB) => (
-			//	prodA.stars <= prodB.stars ? 1 : 1
-			//)).slice(0, 3);
+			this.principaisProdutos = this.produtos.sort((prodA, prodB) => (
+				prodA.stars <= prodB.stars ? 1 : 1
+			)).slice(0, 3);
 			return this.principaisProdutos.length >= 1
 		}
 	},
