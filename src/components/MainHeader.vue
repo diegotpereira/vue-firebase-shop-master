@@ -34,6 +34,7 @@
 </template>
 
 <script>
+/* eslint-disable no-undef */
 import router from '@/router';
 export default {
 	name: 'main-header',
@@ -57,9 +58,9 @@ export default {
 			router.push({
 				name: pagina,
 				params: {
-
-				}
-			})
+					produtosNoCarrinho: this.produtosNoCarrinho
+				},
+			});
 		}
 	}
 }

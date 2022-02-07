@@ -1,8 +1,8 @@
 <template lang="pug">
   .container
-    main-header
+    main-header(v-bind='{produtosNoCarrinho}')
     router-view
-    main-footer
+    main-footer(v-bind='{produtosNoCarrinho}')
     entrar
 </template>
 
@@ -10,6 +10,7 @@
 import MainHeader from './components/MainHeader.vue'
 import MainFooter from './components/MainFooter.vue'
 import Entrar from './components/Entrar.vue'
+
 export default {
 	name: 'app',
 	components: {
@@ -19,7 +20,7 @@ export default {
 	},
 	data() {
 		return {
-			
+			produtosNoCarrinho: {}
 		}
 	},
 }
