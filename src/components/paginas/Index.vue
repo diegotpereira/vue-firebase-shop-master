@@ -81,8 +81,12 @@
 /* eslint-disable no-multi-str */
 /* eslint-disable global-require */
 /* eslint-disable no-unused-expressions */
+import Firebase from '../../appConfig/firebase'
 export default {
 	name: "index",
+	firebase: {
+		produtos: Firebase.dbProdutosRef
+	},
 	data() {
 		return {
 			ativoSlide: 0,
@@ -144,7 +148,7 @@ $padding: 8vh 10vw;
 
 $color-dark: #252525;
 $color-grey: #666;
-$color-green: #7befb2;
+$color-green: #7BEFB2;
 $color-light: #fff;
 
 h1,
@@ -154,7 +158,7 @@ h4 {
 	color: $color-light;
 }
 p {
-	font-size: 2rem;
+	font-size: 2.0rem;
 	color: $color-grey;
 	text-align: justify;
 }
@@ -351,7 +355,7 @@ iframe {
 }
 .info-title {
 	color: $color-dark;
-	font-size: 3rem;
+	font-size: 3.0rem;
 }
 .aside-title {
 	position: absolute;

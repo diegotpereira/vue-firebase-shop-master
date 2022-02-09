@@ -26,7 +26,7 @@
                 @click='exibirProdutoModal(produto)')
                 .produto-acoes(:class='{"produto-actions--active" : startBoxHover}')
                   a.cart-link(:class='{"cart-link--active": verificarNoCarrinho(produto)}'
-                    @click='')
+                    @click='addNoCarrinho(produto)')
                   .star-box(@mouseenter='startBoxHover = true'
                   @mouseleave='startBoxHover = false')
                     span.star.star-link(v-for='star in 5'
@@ -97,8 +97,12 @@
 /* eslint-disable no-unused-expressions */
 import Produto from './Produto.vue'
 import router from '@/router'
+import Firebase from '../../appConfig/firebase'
 export default {
 	name: 'loja',
+	firebase: {
+		produtos: Firebase.dbProdutosRef
+	},
 	props: ['produtosNoCarrinho'],
 
 	components: {
@@ -119,15 +123,28 @@ export default {
         };
     },
     created() {
-      this.produtosFiltrados - this.produtos
-    },
+    this.produtosFiltrados = this.produtos
+    this.$firebaseRefs.produtos.on('value', (snapshot) => {
+      snapshot.forEach((produtoSnap) => {
+        const key = produtoSnap.val()
+        const value = produtoSnap.val()
+        if(produtoSnap.val().rating) {
+          this.$set(this.produtosEstrelas, key, Object.values(value.rating)
+            .reduce((sum, val) => sum + val, 0))
+        } else {
+          this.$set(this.produtosEstrelas, key, 0)
+        }
+      });
+    });
+    this.produtosEmPagina =  document.documentElement.clientWidth < 480 ? 8 : 12
+  },
 	computed: {
 		carrinhoExibir() {
 			return Object.keys(this.produtosNoCarrinho).length > 0
 		},
 		principaisProdutos() {
 			return this.classificarPorAvaliacao(this.produtos).slice(0, 3)
-		}
+		},
 	},
 	methods: {
 
@@ -136,8 +153,8 @@ export default {
 				name: pagina,
 				params: {
 					produtosNoCarrinho: this.produtosNoCarrinho
-				}
-			})
+				},
+			});
 		},
 		carrinhoValor(galleryPage) {
 			this.activePage = galleryPage
@@ -168,8 +185,12 @@ export default {
 		console.log(produto);
 		console.log(estrelas);
 	},
-	addNoCarrinho() {
-
+	addNoCarrinho(produto) {
+		Firebase.dbUsuariosRef.child(`${this.usuario.uid}/carrinho/${produto['key']}`).set({
+			nome: produto.nome,
+			preco: produto.preco,
+			url: produto.url
+		});
 	},
 	verificarNoCarrinho(produto) {
 		if(produto) {
@@ -187,6 +208,7 @@ export default {
 	},
 
 	removerDoCarrinho(key) {
+		Firebase.dbUsuariosRef.child(`${this.usuario.uid}/carrinho/${key}`).remove()
 		this.$delete(this.produtosNoCarrinho, key)
 	},
 	buscaEstrelas(produto) {
@@ -211,22 +233,22 @@ export default {
 		ordenacaoSelecionada(novoTipo) {
 			switch(novoTipo) {
 				case 'popular':
-				this.produtosFiltrados = this.classificarPorAvaliacao(this.produto)
-				break
+					this.produtosFiltrados = this.classificarPorAvaliacao(this.produtos)
+					break
 				case 'recente': 
-				this.produtosFiltrados = this.deepClone(this.produtos)
-				this.deepClone = this.sort((prodA, prodB) => (
-					Date.parse(prodA.date) < Date.parse(prodB.date) ? 1 : -1
-				))
-				break 
+					this.produtosFiltrados = this.deepClone(this.produtos).sort((prodA, prodB)=> {
+						Date.parse(prodA.date) < Date.parse(prodB.date) ? 1 : -1
+					});
+					
+					break 
 
 				default: 
 				this.produtosFiltrados = this.produtos   
 			}
 			this.activePage = 1
-		}
-	}
-}
+		},
+	},
+};
 </script>
 
 <style lang="scss" scoped>
